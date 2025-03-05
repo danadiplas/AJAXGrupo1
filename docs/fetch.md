@@ -65,7 +65,7 @@ La resposta d’una petició fetch() conté diverses propietats útils. Algunes 
 
   
 
-· Quan utilitzar XMLHttpRequest?
+## Quan utilitzar XMLHttpRequest?
 
 Si necessites compatibilitat amb navegadors antics, especialment versions antigues d'Internet Explorer o si necessites un control molt específic sobre el flux de la petició (com a peticions síncrones o el seguiment detallat del procés de la petició).
 
@@ -75,13 +75,13 @@ Si necessites compatibilitat amb navegadors antics, especialment versions antigu
 Quan estàs treballant en un projecte modern que no necessita suport per a navegadors antics, quan vols un codi més net i fàcil de llegir o quan treballes amb APIs modernes que utilitzen promeses i async/await.
 
   
-  ## Errors de Cross-Origin Resource Sharing (CORS)
+## Errors de Cross-Origin Resource Sharing (CORS)
 
 Quan realitzem peticions a un servidor que no està al mateix domini que la nostra aplicació (per exemple, des d’un servidor local a un servidor remot), podem trobar errors relacionats amb CORS. El servidor ha de permetre explícitament que es facin peticions des d'altres dominis.
 
 Si el servidor no està configurat per a acceptar peticions CORS, veurem errors de seguretat i no podrem obtenir les dades desitjades.
 
-  ## Com evitar errors de CORS amb fetch()?
+## Com evitar errors de CORS amb fetch()?
 
 ### Configura el servidor per permetre CORS:
 
