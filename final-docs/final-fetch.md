@@ -13,13 +13,46 @@ console.log(request.responseText); // No se ejecuta hasta recibir la respuesta
 ```
 
 #### Asíncrona (Fetch)
-
+##### ejemplo utilizando then:
 ```js
-fetch("https://jsonplaceholder.typicode.com/posts/1")
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error("Error:", error));
-console.log("Este mensaje aparece antes de recibir la respuesta del servidor.");
+const promise = fetch('https://api.example.com/data');
+
+promise.then(response => {
+
+console.log(response.status);
+
+})
+
+.catch(error => {
+
+console.log("Error:", error);
+
+});
+```
+##### ejemplo utilizando async/await:
+```js
+
+async function obtenirDades() {
+
+try {
+
+const response = await fetch('https://api.example.com/data');
+
+if (!response.ok) {
+
+throw new Error('Error');
+
+}
+
+} catch (error) {
+
+console.log('Error:', error);
+
+}
+
+}
+
+obtenirDades();
 ```
 
 ## Ventajas sobre `XMLHttpRequest`
