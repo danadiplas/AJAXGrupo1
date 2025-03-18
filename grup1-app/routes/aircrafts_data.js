@@ -2,9 +2,9 @@
 import express from 'express';
 
 //import cors from 'cors'
+import dataconnection  from '../dbconnetcion.js';
 
-
-import dataconnection  from './dbconnetcion.js';
+const router = express.Router()
 
 
 // app.use(cors(origin: { * }))
@@ -13,7 +13,7 @@ const app = express();
 
 app.use(express.json())
 
-app.listen(3020, () => {
+app.listen(3010, () => {
     console.log("conectado")
 })
 
@@ -72,3 +72,5 @@ app.delete('/aircrafts_data/:aircraft_code',(req,res)=>{
         }
     })
 })
+
+export default router
