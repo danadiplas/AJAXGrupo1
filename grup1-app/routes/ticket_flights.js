@@ -1,32 +1,17 @@
-// import express, { Router } from 'express'
+ import  { Router } from 'express'
 
-// const router = express.Router()
-
-
+const router = Router()
 // export default Router
-
-
 // const {Client} = require('pg')
-import express from 'express';
-
 //import cors from 'cors'
 import dataconnection  from '../dbconnetcion.js';
-
-const router = express.Router()
-
-
 // app.use(cors(origin: { * }))
 
-const app = express();
-
-app.use(express.json())L
-
-app.listen(3010, () => {
-    console.log("conectado")
-})
 
 
-app.get('/ticket_flights/:ticket_no', async (req,res) => {
+
+
+router.get('/:ticket_no', async (req,res) => {
     dataconnection.connect()
     const ticket_no =req.params.ticket_no
     const fetch_query = 'SELECT * FROM ticket_flights WHERE ticket_no=$1'
@@ -39,11 +24,11 @@ app.get('/ticket_flights/:ticket_no', async (req,res) => {
     
 })
 
-app.post('/ticket_flights', (req,res) => {
+router.post('/', (req,res) => {
     dataconnection.connect()
-    const {ticket_no, model, range} = req.body
-    const data = 'INSERT INTO ticket_flights (ticket_no, model, range) VALUES ($1,$2,$3)'
-    dataconnection.query(data, [ticket_no, model, range], (err, result)=>{
+    const {ticket_no, flight_id, fare_conditions, amount} = req.body
+    const data = 'INSERT INTO ticket_flights (ticket_no, flight_id, fare_conditions, amount) VALUES ($1,$2,$3,$4)'
+    dataconnection.query(data, [ticket_no, flight_id, fare_conditions, amount], (err, result)=>{
         if(err){
             res.send(err)
         }else{
@@ -53,13 +38,14 @@ app.post('/ticket_flights', (req,res) => {
     })
 })
 
-app.put('/ticket_flights/:ticket_no',(req,res)=>{
+router.put('/:ticket_no',(req,res)=>{
     dataconnection.connect()
     const ticket_no=req.params.ticket_no;
-    const model=req.body.model;
-    const range=req.body.range;
-    const update_query="UPDATE ticket_flights SET    model=$1,  range=$2   WHERE ticket_no=$3"
-    dataconnection.query(update_query,[model,range,ticket_no],(err,result)=>{
+    const flight_id=req.body.flight_id;
+    const fare_conditions=req.body.fare_conditions;
+    const amount=req.body.amount;
+    const update_query="UPDATE ticket_flights SET    flight_id=$1,  fare_conditions=$2, amount=$3  WHERE ticket_no=$4"
+    dataconnection.query(update_query,[flight_id,fare_conditions,amount,ticket_no],(err,result)=>{
         if(err){
             res.send(err)
         }else{
@@ -68,7 +54,7 @@ app.put('/ticket_flights/:ticket_no',(req,res)=>{
     })
 })
 
-app.delete('/ticket_flights/:ticket_no',(req,res)=>{
+router.delete('/:ticket_no',(req,res)=>{
     dataconnection.connect()
     const ticket_no=req.params.ticket_no
     const delete_query='DELETE  from ticket_flights where ticket_no=$1'
