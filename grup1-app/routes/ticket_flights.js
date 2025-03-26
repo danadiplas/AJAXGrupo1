@@ -1,14 +1,21 @@
- import  { Router } from 'express'
-
-const router = Router()
-// export default Router
-// const {Client} = require('pg')
-//import cors from 'cors'
+import express from 'express'
+// import  { Router } from 'express'
+import cors from 'cors'
+const router = express.Router()
 import dataconnection  from '../dbconnetcion.js';
-// app.use(cors(origin: { * }))
+router.use(cors())
 
-
-
+router.get('/', async (req,res) => {
+    dataconnection.connect()
+    const fetch_query = 'SELECT * FROM ticket_flights LIMIT 1000'
+    try{
+        let result = await dataconnection.query(fetch_query)
+        res.json(result.rows)
+    } catch (err){
+        res.send(err)
+    }
+    
+})
 
 
 router.get('/:ticket_no', async (req,res) => {
