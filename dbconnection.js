@@ -1,18 +1,12 @@
-// const {Client} = require('pg')
 import pg from 'pg'
-//import cors from 'cors'
 
 const {Pool} = pg
 const dataconnection = new Pool({
     host:"localhost",
     user:"postgres",
     port:"5432",
-    password:"admin",
+    password:"badia123",
     database:"demo"
 })
-
-
-
-// app.use(cors(origin: { * }))
 
 export default dataconnection

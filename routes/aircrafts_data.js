@@ -2,7 +2,7 @@
 import express from 'express';
 
 //import cors from 'cors'
-import dataconnection  from '../dbconnetcion.js';
+import dataconnection  from '../dbconnection.js';
 
 const router = express.Router()
 
