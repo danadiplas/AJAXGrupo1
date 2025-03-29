@@ -1,15 +1,15 @@
 async function fetchTickets() {
   try {
-    const ticketsTable = document.getElementById('zero_config');
-    const response = await fetch('/tickets');
-    const tickets = await response.json();
+    const ticketsTable = document.getElementById('zero_config')
+    const response = await fetch('/tickets')
+    const tickets = await response.json()
     
     while (ticketsTable?.rows.length > 1) {
       ticketsTable.deleteRow(1);
     }
 
     tickets.forEach(ticket => {
-      const row = ticketsTable.insertRow();
+      const row = ticketsTable.insertRow()
       row.innerHTML = `
         <td>${ticket.ticket_no}</td>
         <td>${ticket.book_ref}</td>
@@ -22,37 +22,105 @@ async function fetchTickets() {
       `
     })
   } catch (error) {
-    console.error("Error fetching tickets:", error);
+    console.error("Error fetching tickets:", error)
   }
 }
 
 async function deleteTicket(ticket_no) {
   try {
-    console.log(`/tickets/${ticket_no}`);
-    
     const response = await fetch(`/tickets/${ticket_no}`, {
       method: 'DELETE'
-      
     });
     
     if (!response.ok) {
-      throw new Error(`Failed to delete ticket: ${response.statusText}`);
+      throw new Error(`Failed to delete ticket: ${response.statusText}`)
     }
 
-    await fetchTickets();
+    await fetchTickets()
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error deleting ticket:', error)
   }
 }
 
+function createTicket(createModal) {
+  createModal.showModal()
+
+  const form = document.getElementById('tickets-form')
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    try {
+      const ticket_no = document.getElementById('ticket_no').value
+      const book_ref = document.getElementById('book_ref').value
+      const passenger_id = document.getElementById('passenger_id').value
+      const passenger_name = document.getElementById('passenger_name').value
+
+      const response = await fetch('/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ticket_no,
+          book_ref,
+          passenger_id,
+          passenger_name
+        })
+      })
+      
+      console.log(await response.json())  // Log response to see the actual returned data
+
+      if (!response.ok) {
+        throw new Error(`Failed to create ticket: ${response.statusText}`)        
+      }
+
+      await fetchTickets()
+    } catch (error) {
+      console.error('Error creating ticket:', error)
+    }
+  })
+}
+
+async function fetchBookingRefs() {
+  try {
+    const response = await fetch('/bookings')
+    const bookingRefs = await response.json()
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch booking references: ${response.statusText}`)
+    }
+
+    const bookRefSelect = document.getElementById('book_ref')
+    bookingRefs.forEach(bookRef => {
+      const option = document.createElement('option')
+      option.value = bookRef.book_ref
+      option.textContent = bookRef.book_ref
+      bookRefSelect.appendChild(option)
+    })
+
+  } catch (error) {
+    console.error('Error fetching booking references:', error)
+  }
+}
 document.addEventListener('DOMContentLoaded', () => {
   fetchTickets()
 
   document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('create')) {
+      const createModal = document.getElementById('tickets-modal')
+      createTicket(createModal)
+      fetchBookingRefs()
+    }
+
     if (e.target.classList.contains('delete')) {
-      const ticket_no = e.target.dataset.id;
-      deleteTicket(ticket_no);
+      const ticket_no = e.target.dataset.id
+      deleteTicket(ticket_no)
+    }
+
+    if (e.target.classList.contains('edit')) {
+      const ticket_no = e.target.dataset.id
+      editTicket(ticket_no)
     }
   });
 })

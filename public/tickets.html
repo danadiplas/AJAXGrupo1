@@ -338,7 +338,7 @@
                   <th>ID</th>
                   <th>Name</th>
                   <th>
-                    <button id="create-ticket-btn" class="btn btn-info btn-sm">Create</button>
+                    <button class="btn btn-info btn-sm create">Create</button>
                   </th>
                 </tr>
               </thead>
@@ -348,6 +348,25 @@
           </div>
         </div>
       </div>
+
+      <dialog id="tickets-modal" closedBy="any">
+        <form id="tickets-form" method="post">
+          <label for="ticket_no" class="text-end control-label col-form-label">Ticket Nº</label>
+          <input type="text" id="ticket_no" name="ticket_no" class="form-control" required />
+
+          <label for="book_ref" class="text-end control-label col-form-label">Booking Ref</label>
+          <select id="book_ref" name="book_ref" class="form-control" required></select>
+          <label for="passenger_id" class="text-end control-label col-form-label">ID</label>
+          <input type="text" id="passenger_id" name="passenger_id" class="form-control" required />
+
+          <label for="passenger_name" class="text-end control-label col-form-label">Name</label>
+          <input type="text" id="passenger_name" name="passenger_name" class="form-control" required />
+
+          <button type="submit" class="btn btn-info btn-sm submit">Submit</button>
+        </form>
+
+        </form>
+      </dialog>
       <!-- ============================================================== -->
       <!-- End Container fluid  -->
       <!-- ============================================================== -->

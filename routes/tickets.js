@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/', async (req, res) => {
   try {
-    const result = await dataconnection.query('SELECT * FROM tickets LIMIT 10')
+    const result = await dataconnection.query('SELECT * FROM tickets ORDER BY book_ref ASC LIMIT 10')
     res.json(result.rows)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const create_query = 'INSERT INTO tickets (ticket_no, book_ref, passenger_id, passenger_name, contact_data) VALUES ($1, $2, $3, $4) RETURNING *'
+    const create_query = 'INSERT INTO tickets (ticket_no, book_ref, passenger_id, passenger_name) VALUES ($1, $2, $3, $4) RETURNING *'
     const result = await dataconnection.query(create_query, [req.body.ticket_no, req.body.book_ref, req.body.passenger_id, req.body.passenger_name])
     res.status(201).json(result.rows[0])
   } catch (error) {
