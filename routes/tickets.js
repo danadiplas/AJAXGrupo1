@@ -37,10 +37,16 @@ router.put('/:ticket_no', async (req, res) => {
   }
 })
 
-router.delete('/ticket_no', async (req, res) => {
+router.delete('/:ticket_no', async (req, res) => {
+  const client = await dataconnection.connect()
   try {
+    await client.query('BEGIN')
+    await client.query('DELETE FROM boarding_passes WHERE ticket_no = $1', [req.params.ticket_no])
+    await client.query('DELETE FROM ticket_flights WHERE ticket_no = $1', [req.params.ticket_no])
     const delete_query = 'DELETE FROM tickets WHERE ticket_no = $1 RETURNING *'
-    const result = await dataconnection.query(delete_query, [req.params.ticket_no])
+
+    const result = await client.query(delete_query, [req.params.ticket_no])
+    await client.query('COMMIT')
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Ticket not found' });
@@ -48,7 +54,10 @@ router.delete('/ticket_no', async (req, res) => {
 
     res.status(200).json(result.rows[0])
   } catch (error) {
+    await client.query('ROLLBACK')
     res.status(500).json({ error: error.message })
+  } finally {
+    client.release()
   }
 })
 

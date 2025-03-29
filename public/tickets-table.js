@@ -1,12 +1,9 @@
 async function fetchTickets() {
   try {
     const ticketsTable = document.getElementById('zero_config');
-    const createBtn = document.getElementById('.btn-info');
     const response = await fetch('/tickets');
     const tickets = await response.json();
-    console.log(tickets);
     
-
     while (ticketsTable?.rows.length > 1) {
       ticketsTable.deleteRow(1);
     }
@@ -29,6 +26,33 @@ async function fetchTickets() {
   }
 }
 
+async function deleteTicket(ticket_no) {
+  try {
+    console.log(`/tickets/${ticket_no}`);
+    
+    const response = await fetch(`/tickets/${ticket_no}`, {
+      method: 'DELETE'
+      
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to delete ticket: ${response.statusText}`);
+    }
+
+    await fetchTickets();
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  fetchTickets() 
+  fetchTickets()
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete')) {
+      const ticket_no = e.target.dataset.id;
+      deleteTicket(ticket_no);
+    }
+  });
 })
