@@ -3,7 +3,7 @@ async function fetchTickets() {
     const ticketsTable = document.getElementById('zero_config')
     const response = await fetch('/tickets')
     const tickets = await response.json()
-    
+
     while (ticketsTable?.rows.length > 1) {
       ticketsTable.deleteRow(1);
     }
@@ -31,7 +31,7 @@ async function deleteTicket(ticket_no) {
     const response = await fetch(`/tickets/${ticket_no}`, {
       method: 'DELETE'
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to delete ticket: ${response.statusText}`)
     }
@@ -47,6 +47,10 @@ function createTicket(createModal) {
   createModal.showModal()
 
   const form = document.getElementById('tickets-form')
+  const ticketNoInput = document.getElementById('ticket_no')
+  ticketNoInput.value = ''
+  ticketNoInput.readOnly = false
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
@@ -68,11 +72,9 @@ function createTicket(createModal) {
           passenger_name
         })
       })
-      
-      console.log(await response.json())  // Log response to see the actual returned data
 
       if (!response.ok) {
-        throw new Error(`Failed to create ticket: ${response.statusText}`)        
+        throw new Error(`Failed to create ticket: ${response.statusText}`)
       }
 
       await fetchTickets()
@@ -103,6 +105,47 @@ async function fetchBookingRefs() {
     console.error('Error fetching booking references:', error)
   }
 }
+
+function editTicket(editModal, ticket_no) {
+  editModal.showModal()
+
+  const form = document.getElementById('tickets-form')
+  const ticketNoInput = document.getElementById('ticket_no')
+  ticketNoInput.value = ticket_no
+  ticketNoInput.readOnly = true
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    try {
+      const book_ref = document.getElementById('book_ref').value
+      const passenger_id = document.getElementById('passenger_id').value
+      const passenger_name = document.getElementById('passenger_name').value
+
+
+      const response = await fetch(`/tickets/${ticket_no}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          book_ref,
+          passenger_id,
+          passenger_name
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to update ticket: ${response.statusText}`)
+      }
+
+      await fetchTickets()
+    } catch (error) {
+      console.error('Error updating ticket:', error)
+    }
+  })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   fetchTickets()
 
@@ -119,8 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (e.target.classList.contains('edit')) {
+      const editModal = document.getElementById('tickets-modal')
       const ticket_no = e.target.dataset.id
-      editTicket(ticket_no)
+      editTicket(editModal, ticket_no)
+      fetchBookingRefs()
     }
   });
 })
