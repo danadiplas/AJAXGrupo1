@@ -11,8 +11,6 @@ const dataconnection = new Pool({
     database:"demo"
 })
 
-
-
 // app.use(cors(origin: { * }))
 
 export default dataconnection

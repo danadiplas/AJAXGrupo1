@@ -342,7 +342,8 @@
                     <th>Nº Seat</th>
                     <th>Fare conditions</th>
                     <th>
-                      <button class="btn btn-info btn-sm">Create</button>
+                      <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalcrear">Create</button>
                     </th>
                   </tr>
                 </thead>
@@ -354,6 +355,9 @@
             </div>
           </div>
         </div>
+
+
+
         <!-- ============================================================== -->
         <!-- Start Page Content -->
         <!-- ============================================================== -->
@@ -375,6 +379,74 @@
       <!-- End Page wrapper  -->
       <!-- ============================================================== -->
     </div>
+
+
+    <div class="modal fade" id="modalcrear" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Crear asiento</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modalCrearSeats">
+            <div class="mb-3">
+              <label for="aircraft_code" class="form-label">Código del avión</label>
+              <!-- <input type="text" class="form-control" id="aircraft_code"> -->
+              <select class="form-select" id="fare_conditions_select">
+
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="seat_no" class="form-label">Número del asiento</label>
+              <input type="text" class="form-control" id="seat_no">
+            </div>
+            <div class="mb-3">
+              <label for="fare_conditions" class="form-label">Condiciones de tarifa</label>
+              <select class="form-select" id="fare_conditions">
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="Comfort">Comfort</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" onclick="crearSeat()">Crear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="modalEdicion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" id="modalEditarSeats">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" tabindex="-1" id="modalBorrar">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Borarr asiento</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres borrar este asiento?</p>
+          </div>
+          <div class="modal-footer" id="footer-modal-borrar">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
     <!-- ============================================================== -->
     <!-- End Wrapper -->
     <!-- ============================================================== -->
@@ -394,7 +466,7 @@
     <!--Custom JavaScript -->
     <script src="../dist/js/custom.min.js"></script>
     <!-- this page js -->
-    <script src="../assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
+    <!-- <script src="../assets/extra-libs/multicheck/datatable-checkbox-init.js"></script> -->
     <script src="../assets/extra-libs/multicheck/jquery.multicheck.js"></script>
     <!-- <script src="../assets/extra-libs/DataTables/datatables.min.js"></script> -->
     <!-- <script>
