@@ -3,10 +3,8 @@ import dataconnectionPersonal from '../dbconnetion-personal.js';
 import cors from 'cors'
 
 
-
 const router = express.Router()
 
-const app = express();
 router.use(cors())
 router.use(express.json());
 
@@ -23,7 +21,6 @@ router.get('/', async (req, res) => {
     }
 })
 
-// HAZ UN GET SOLO DE LOS CODIGOS DE LOS AVIONES, PERO SOLO LOS ÚNICOS. PARA METERLO EN EL SELECT
 
 router.get('/:seat_no&:aircraft_code', async (req, res) => {
     dataconnectionPersonal.connect()

@@ -1,3 +1,5 @@
+// GET
+
 function getSeats() {
   fetch('http://localhost:3020/seats/')
     .then(response => response.json())
@@ -27,63 +29,10 @@ function getSeats() {
 
 getSeats()
 
-let mimodal = document.getElementById('modalEdicion')
-mimodal.addEventListener('show.bs.modal', function (event) {
-  // MUESTRA LOS DATOS QUE HAS SACADO DEL GET CON ID
-  // SACA LOS DATOS ENVIANDOLE EL SEAT Y EL CODE AL FECH QUE SOLO BUSCA POR ID
-  // HAZ QUE SE META UN HTML CON TODOS LOS DATOS Y UN BOTÓN DE UPDATE, QUE LLAME A LA FUNCIÓN updateSeats()
-
-
-  let air_code = event.explicitOriginalTarget.attributes['id-aircraft'].nodeValue
-  let num_seat = event.explicitOriginalTarget.attributes['id-seat'].nodeValue
-
-  fetch(`http://localhost:3020/seats/${num_seat}&${air_code}`)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-
-      // TIENES QUE PONER EL CODIGO Y LOS ASIENTOS EN DISABLED PARA QUE SE SEPA QUE NO SE PUEDEN EIDTAR!!!!
-
-      let modalEdicion = document.getElementById('modalEditarSeats')
-      modalEdicion.innerHTML = `
-    <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Update data</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" >
-            <div class="mb-3">
-              <label for="aircraft_code" class="form-label">Código del avión</label>
-              <input type="text" class="form-control" id="aircraft_code" value="${data.aircraft_code}">
-            </div>
-            <div class="mb-3">
-              <label for="seat_no" class="form-label">Número del asiento</label>
-              <input type="text" class="form-control" id="seat_no" value="${data.seat_no}">
-            </div>
-            <div class="mb-3">
-              <label for="fare_conditions" class="form-label">Condiciones de tarifa</label>
-              <select class="form-select" id="fare_conditions_update">
-                  <option value="Economy" ${data.fare_conditions === "Economy" ? "selected" : ""}>Economy</option>
-                  <option value="Business" ${data.fare_conditions === "Business" ? "selected" : ""}>Business</option>
-                  <option value="Comfort" ${data.fare_conditions === "Comfort" ? "selected" : ""}>Comfort</option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="updateSeats('${data.aircraft_code}', '${data.seat_no}')">Editar</button>
-          </div>
-    `
-    })
-})
-
-
+// CREAR
 
 let modalcrear = document.getElementById('modalcrear')
-modalcrear.addEventListener('hidden.bs.modal', function (event) {
-  // document.getElementById('aircraft_code').value = ''
-  document.getElementById('seat_no').value = ''
-  document.getElementById('fare_conditions').value = ''
-})
+
 
 modalcrear.addEventListener('show.bs.modal', function (event) {
   fetch('http://localhost:3020/seats/aircraft_code')
@@ -101,40 +50,8 @@ modalcrear.addEventListener('show.bs.modal', function (event) {
     })
 })
 
-
-// let modalcrearDatos = document.getElementById('modalcrear')
-// modalcrear.addEventListener('show.bs.modal', function (event) {
-
-// })
-
-function updateSeats(actual_code, actual_seat) {
-
-  let actual_fare = document.getElementById('fare_conditions_update').value
-
-  const fare = {
-    fare_conditions: actual_fare
-  }
-
-  fetch(`http://localhost:3020/seats/${actual_seat}&${actual_code}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(fare)
-  })
-    .then(respuesta => {
-      console.log(respuesta.message);
-      respuesta.json()
-      getSeats()
-    })
-    .catch(error => {
-      console.log(error)
-    })
-}
-
-
 function crearSeat() {
-  let aircraft_code_data = document.getElementById('aircraft_code').value
+  let aircraft_code_data = document.getElementById('fare_conditions_select').value
   let seat_no_data = document.getElementById('seat_no').value
   let fare_conditions_data = document.getElementById('fare_conditions').value
 
@@ -152,14 +69,107 @@ function crearSeat() {
     body: JSON.stringify(seat)
   })
     .then(respuesta => {
-      respuesta.json()
-      console.log(respuesta.message);
       getSeats()
+      return respuesta.json()
+    })
+    .then(data => {
+      let textoRespuesta = document.getElementById('textoRespuesta')
+      textoRespuesta.innerHTML = `${data.message}`
+      textoRespuesta.classList.add('text-success')
+
     })
     .catch(error => {
-      console.log(error);
+      let textoRespuesta = document.getElementById('textoRespuesta')
+      textoRespuesta.innerHTML = `${error}`
+      textoRespuesta.classList.add('text-danger')
+    })
+
+}
+
+modalcrear.addEventListener('hidden.bs.modal', function (event) {
+  document.getElementById('seat_no').value = ''
+  document.getElementById('fare_conditions').value = ''
+})
+
+
+// EDITAR
+
+let mimodal = document.getElementById('modalEdicion')
+mimodal.addEventListener('show.bs.modal', function (event) {
+
+  let air_code = event.explicitOriginalTarget.attributes['id-aircraft'].nodeValue
+  let num_seat = event.explicitOriginalTarget.attributes['id-seat'].nodeValue
+
+  fetch(`http://localhost:3020/seats/${num_seat}&${air_code}`)
+    .then(response => response.json())
+    .then(data => {
+
+      let modalEdicion = document.getElementById('modalEditarSeats')
+      modalEdicion.innerHTML = `
+    <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Update data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" >
+            <div class="mb-3">
+              <label for="aircraft_code" class="form-label">Código del avión</label>
+              <input type="text" class="form-control" id="aircraft_code" value="${data.aircraft_code}" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="seat_no" class="form-label">Número del asiento</label>
+              <input type="text" class="form-control" id="seat_no" value="${data.seat_no}" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="fare_conditions" class="form-label">Condiciones de tarifa</label>
+              <select class="form-select" id="fare_conditions_update">
+                  <option value="Economy" ${data.fare_conditions === "Economy" ? "selected" : ""}>Economy</option>
+                  <option value="Business" ${data.fare_conditions === "Business" ? "selected" : ""}>Business</option>
+                  <option value="Comfort" ${data.fare_conditions === "Comfort" ? "selected" : ""}>Comfort</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-start" id="textoRespuesta_update"></p>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" onclick="updateSeats('${data.aircraft_code}', '${data.seat_no}')">Editar</button>
+          </div>
+    `
+    })
+})
+
+function updateSeats(actual_code, actual_seat) {
+
+  let actual_fare = document.getElementById('fare_conditions_update').value
+
+  const fare = {
+    fare_conditions: actual_fare
+  }
+
+  fetch(`http://localhost:3020/seats/${actual_seat}&${actual_code}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(fare)
+  })
+    .then(respuesta => {
+      getSeats()
+      return respuesta.json()
+    })
+    .then(data => {
+      let textoRespuesta = document.getElementById('textoRespuesta_update')
+      textoRespuesta.innerHTML = `${data.message}`
+      textoRespuesta.classList.add('text-success')
+    })
+    .catch(error => {
+      let textoRespuesta = document.getElementById('textoRespuesta_update')
+      textoRespuesta.innerHTML = `${error}`
+      textoRespuesta.classList.add('text-danger')
     })
 }
+
+
+// BORRAR
 
 let modalBorrar = document.getElementById('modalBorrar')
 modalBorrar.addEventListener('show.bs.modal', function (event) {
@@ -169,6 +179,7 @@ modalBorrar.addEventListener('show.bs.modal', function (event) {
 
   let footer = document.getElementById('footer-modal-borrar')
   footer.innerHTML = `
+    <p class="text-start" id="textoRespuesta_borrar"></p>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
     <button type="button" class="btn btn-primary" onclick="borrarSeat('${air_code}', '${num_seat}')">Borrar</button>
   `
@@ -183,12 +194,17 @@ function borrarSeat(air_code, num_seat) {
     },
   })
     .then(respuesta => {
-      console.log(respuesta.message);
-      respuesta.json()
       getSeats()
+      return respuesta.json()
+    })
+    .then(data => {
+      let textoRespuesta = document.getElementById('textoRespuesta_borrar')
+      textoRespuesta.innerHTML = `${data.message}`
+      textoRespuesta.classList.add('text-success')
     })
     .catch(error => {
-      console.log(error)
+      let textoRespuesta = document.getElementById('textoRespuesta_borrar')
+      textoRespuesta.innerHTML = `${error}`
+      textoRespuesta.classList.add('text-danger')
     })
-
 }
