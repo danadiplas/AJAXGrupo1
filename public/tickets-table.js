@@ -43,9 +43,7 @@ async function deleteTicket(ticket_no) {
   }
 }
 
-function createTicket(createModal) {
-  createModal.showModal()
-
+function createTicket() {
   const form = document.getElementById('tickets-form')
   const ticketNoInput = document.getElementById('ticket_no')
   ticketNoInput.value = ''
@@ -72,7 +70,7 @@ function createTicket(createModal) {
           passenger_name
         })
       })
-
+      
       if (!response.ok) {
         throw new Error(`Failed to create ticket: ${response.statusText}`)
       }
@@ -106,9 +104,7 @@ async function fetchBookingRefs() {
   }
 }
 
-function editTicket(editModal, ticket_no) {
-  editModal.showModal()
-
+function editTicket(ticket_no) {
   const form = document.getElementById('tickets-form')
   const ticketNoInput = document.getElementById('ticket_no')
   ticketNoInput.value = ticket_no
@@ -125,9 +121,6 @@ function editTicket(editModal, ticket_no) {
 
       const response = await fetch(`/tickets/${ticket_no}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({
           book_ref,
           passenger_id,
@@ -152,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('create')) {
       const createModal = document.getElementById('tickets-modal')
-      createTicket(createModal)
+      createModal.showModal()
+      createTicket()
       fetchBookingRefs()
     }
 
@@ -164,7 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.classList.contains('edit')) {
       const editModal = document.getElementById('tickets-modal')
       const ticket_no = e.target.dataset.id
-      editTicket(editModal, ticket_no)
+      editModal.showModal()
+      editTicket(ticket_no)
       fetchBookingRefs()
     }
   });
